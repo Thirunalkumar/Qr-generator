@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>THIRU UPI QR Generator</title>
+  <title>THIRU QR Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
   <style>
@@ -75,7 +75,7 @@
       justify-content: center;
     }
 
-    #copyMessage {
+    #copyMessage, #copyNoteMessage {
       color: green;
       font-size: 14px;
       display: none;
@@ -110,28 +110,27 @@
     <label>Enter Amount:</label>
     <input type="number" id="amount" placeholder="ENTER AMOUNT">
 
-    <label>Enter Note:</label>
+    <label>Enter Box No:</label>
     <input type="text" id="note" placeholder="BOX NUMBER">
+    <button onclick="copyNote()">📋 Copy Box No</button>
+    <div id="copyNoteMessage">Box No Copied!</div>
 
-    <button onclick="generateUPI()">Generate  link</button>
+    <button onclick="generateUPI()">Generate QR code Link</button>
 
     <div id="printSection">
-     
-
-      <label>UPI Link:</label>
+      <label>QR code Link:</label>
       <input type="text" id="upiField" readonly>
-      <button onclick="copyUPILink()">📋 Copy UPI Link</button>
-      <div id="copyMessage">Copied!</div>
-    </div>
+      <button onclick="copyUPILink()">📋 Copy QR code Link</button>
+      <div id="copyMessage">QR code Link Copied!</div>
 
-    
+      <div id="qrcode"></div>
+      <button onclick="downloadQR()">📥 Download QR</button>
+    </div>
   </div>
 
   <script>
-    let currentQR = null;
-
     function generateUPI() {
-      const upi_id = "svnetwork12-3@okhdfcbank";
+      const upi_id = "svnetwork12-2@okicici";
       const name = "shanmugam s";
       const amount = document.getElementById("amount").value.trim();
       const note = document.getElementById("note").value.trim();
@@ -148,42 +147,51 @@
 
       const qrContainer = document.getElementById("qrcode");
       qrContainer.innerHTML = "";
-      currentQR = new QRCode(qrContainer, {
+      new QRCode(qrContainer, {
         text: upiLink,
         width: 220,
         height: 220
       });
     }
 
-    function copyUPILink() {
-      const copyText = document.getElementById("upiField");
-      copyText.removeAttribute("readonly"); // allow selection for mobile
-      copyText.select();
-      copyText.setSelectionRange(0, 99999); // mobile support
-      copyText.setAttribute("readonly", true);
-
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(copyText.value).then(() => {
-          showCopyMessage();
-        }, () => {
-          fallbackCopy(copyText);
-        });
-      } else {
-        fallbackCopy(copyText);
+    async function copyUPILink() {
+      const copyText = document.getElementById("upiField").value;
+      if (!copyText) {
+        alert("Please generate UPI link first!");
+        return;
       }
-    }
-
-    function fallbackCopy(copyText) {
       try {
-        document.execCommand("copy");
-        showCopyMessage();
+        await navigator.clipboard.writeText(copyText);
+        showCopyMessage("copyMessage");
       } catch (err) {
-        console.error("Copy failed", err);
+        fallbackCopy("upiField", "copyMessage");
       }
     }
 
-    function showCopyMessage() {
-      const msg = document.getElementById("copyMessage");
+    async function copyNote() {
+      const noteValue = document.getElementById("note").value;
+      if (!noteValue) {
+        alert("Please enter a note first!");
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(noteValue);
+        showCopyMessage("copyNoteMessage");
+      } catch (err) {
+        fallbackCopy("note", "copyNoteMessage");
+      }
+    }
+
+    function fallbackCopy(elementId, messageId) {
+      const input = document.getElementById(elementId);
+      input.select();
+      input.setSelectionRange(0, 99999);
+      document.execCommand("copy");
+      showCopyMessage(messageId);
+    }
+
+    function showCopyMessage(id) {
+      const msg = document.getElementById(id);
       msg.style.display = "block";
       setTimeout(() => { msg.style.display = "none"; }, 1500);
     }
