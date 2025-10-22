@@ -112,8 +112,7 @@
 
     <label>Enter Box No:</label>
     <input type="text" id="note" placeholder="BOX NUMBER">
-    <button onclick="copyNote()">📋 Copy Box No</button>
-    <div id="copyNoteMessage">Box No Copied!</div>
+   
 
     <button onclick="generateUPI()">Generate QR code Link</button>
 
@@ -123,8 +122,8 @@
       <button onclick="copyUPILink()">📋 Copy QR code Link</button>
       <div id="copyMessage">QR code Link Copied!</div>
 
-      <div id="qrcode"></div>
-      <button onclick="downloadQR()">📥 Download QR</button>
+     <button onclick="copyNote()">📋 Copy Box No</button>
+    <div id="copyNoteMessage">Box No Copied!</div>
     </div>
   </div>
 
@@ -136,7 +135,7 @@
       const note = document.getElementById("note").value.trim();
 
       if (!amount || !note) {
-        alert("Please enter both amount and note.");
+        alert("Please enter both amount and Box no.");
         return;
       }
 
