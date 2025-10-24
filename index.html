@@ -47,6 +47,11 @@
       box-sizing: border-box;
     }
 
+    /* Convert box number input to uppercase automatically */
+    #note {
+      text-transform: uppercase;
+    }
+
     #upiField {
       font-family: monospace;
       background: #f8f8f8;
@@ -111,8 +116,7 @@
     <input type="number" id="amount" placeholder="ENTER AMOUNT">
 
     <label>Enter Box No:</label>
-    <input type="text" id="note" placeholder="BOX NUMBER">
-   
+    <input type="text" id="note" placeholder="BOX NUMBER" oninput="this.value = this.value.toUpperCase();">
 
     <button onclick="generateUPI()">Generate QR code Link</button>
 
@@ -122,9 +126,13 @@
       <button onclick="copyUPILink()">📋 Copy QR code Link</button>
       <div id="copyMessage">QR code Link Copied!</div>
 
-     <button onclick="copyNote()">📋 Copy Box No</button>
-    <div id="copyNoteMessage">Box No Copied!</div>
+      <button onclick="copyNote()">📋 Copy Box No</button>
+      <div id="copyNoteMessage">Box No Copied!</div>
+
+     
     </div>
+
+    
   </div>
 
   <script>
@@ -170,7 +178,7 @@
     async function copyNote() {
       const noteValue = document.getElementById("note").value;
       if (!noteValue) {
-        alert("Please enter a note first!");
+        alert("Please enter a Box No first!");
         return;
       }
       try {
